@@ -1,9 +1,22 @@
 <script setup>
+import { computed } from "vue";
+import { getPressureMm, getTime } from "../utils/index";
+
 const props = defineProps({
   weatherInfo: {
     type: [Object, null],
     required: true,
   },
+});
+
+const timezone = computed(() => props.weatherInfo?.timezone);
+
+const sunriseTime = computed(() => {
+  return getTime(props.weatherInfo?.sys?.sunrise + timezone.value);
+});
+
+const sunsetTime = computed(() => {
+  return getTime(props.weatherInfo?.sys?.sunset + timezone.value);
 });
 </script>
 
@@ -59,7 +72,9 @@ const props = defineProps({
           <div class="card-info">
             <div class="card-centered">
               <div class="info-main">
-                <div class="info-main-num">765</div>
+                <div class="info-main-num">
+                  {{ getPressureMm(weatherInfo?.main?.pressure) }}
+                </div>
                 <div class="info-main-text">mm</div>
               </div>
             </div>
@@ -69,7 +84,9 @@ const props = defineProps({
           <div class="card-small-title">Feels like</div>
           <div class="card-small-info">
             <div class="card-small-data">
-              <div class="info-main-num">21</div>
+              <div class="info-main-num">
+                {{ Math.round(weatherInfo?.main?.feels_like) }}
+              </div>
               <div class="info-main-text">°C</div>
             </div>
             <div class="card-small-hint">
@@ -90,12 +107,12 @@ const props = defineProps({
               <div class="state">
                 <div class="state-pic"></div>
                 <div class="state-title">Sunrise</div>
-                <div class="state-time">07:31:42</div>
+                <div class="state-time">{{ sunriseTime }}</div>
               </div>
               <div class="state">
                 <div class="state-pic state-pic--flipped"></div>
                 <div class="state-title">Sunset</div>
-                <div class="state-time">18:34:19</div>
+                <div class="state-time">{{ sunsetTime }}</div>
               </div>
             </div>
           </div>
@@ -104,7 +121,7 @@ const props = defineProps({
           <div class="card-small-title">Cloudiness</div>
           <div class="card-small-info">
             <div class="card-small-data">
-              <div class="info-main-num">80</div>
+              <div class="info-main-num">{{ weatherInfo?.clouds?.all }}</div>
               <div class="info-main-text">%</div>
             </div>
             <div class="card-small-hint">

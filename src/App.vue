@@ -13,7 +13,6 @@ function getWeather() {
   fetch(`${BASE_URL}?q=${city.value}&units=metric&land=ru&appid=${API_KEY}`)
     .then((response) => response.json())
     .then((data) => (weatherInfo.value = data));
-  console.log(weatherInfo.value.name);
 }
 
 onMounted(getWeather);
